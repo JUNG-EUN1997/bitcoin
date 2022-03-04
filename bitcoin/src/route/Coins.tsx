@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { theme } from "../theme";
+import { fetchCoins } from "../api";
 
 const Container = styled.div`
   width: 50%;
@@ -27,24 +29,18 @@ const Coin = styled.div`
   margin-bottom: 8px;
   a {
     color: initial;
+    display: flex;
+    align-items: center;
   }
 `;
-
-const coins = [
-  {
-    id: 1,
-    name: "bitcoin",
-  },
-  {
-    id: 2,
-    name: "bitcoin2",
-  },
-  {
-    id: 2,
-    name: "bitcoin3",
-  },
-];
-
+const Img = styled.img`
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+`;
+const Loading = styled.div`
+  text-align: center;
+`;
 interface ICoins {
   id: string;
   name: string;
@@ -56,16 +52,32 @@ interface ICoins {
 }
 
 function Coins() {
-  // const [coins, setCoins] = useState<ICoins[]>([]);
+  const { isLoading, data } = useQuery<ICoins[]>("allCoins", fetchCoins);
+  console.log(data?.slice(0, 100));
+
   return (
     <Container>
       <Header>Coins</Header>
       <CoinList>
-        {coins.map((coin) => (
-          <Link to={`/${coin.id}`}>
-            <Coin>{coin.name}</Coin>
-          </Link>
-        ))}
+        {isLoading ? (
+          <Loading>Loading...</Loading>
+        ) : (
+          data?.slice(0, 100).map((coin) => (
+            <Coin key={coin.id}>
+              <Link
+                to={{
+                  pathname: `/${coin.id}`,
+                  state: { name: coin.name },
+                }}
+              >
+                <Img
+                  src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLocaleLowerCase()}`}
+                />
+                {coin.name} &rarr;
+              </Link>
+            </Coin>
+          ))
+        )}
       </CoinList>
     </Container>
   );

@@ -1,4 +1,5 @@
 # Bitcoin 시세 확인 사이트
+> 이 프로젝트는 이제 운영하지 않습니다! 해당 프로젝트로 이동해주세요. [이동](https://github.com/JUNG-EUN1997/react-master)
 
 ## coinpaprika API 
 [이동](https://api.coinpaprika.com/)
